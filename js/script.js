@@ -65,7 +65,7 @@ function getTotalSales() {
     fetch('https://inlupp-fa.azurewebsites.net/api/total-sales')
         .then(res => res.json())
         .then(data => {
-                document.getElementById('total-sales').innerHTML = `${data.currency}${data.amount}`;
+            document.getElementById('total-sales').innerHTML = `${data.currency}${data.amount}`;
         });
 };
 getTotalSales();
@@ -75,7 +75,7 @@ function getTotalPurchases() {
     fetch('https://inlupp-fa.azurewebsites.net/api/total-purchases')
         .then(res => res.json())
         .then(data => {
-                document.getElementById('total-purchases').innerHTML = `${data.currency}${data.amount}`;
+            document.getElementById('total-purchases').innerHTML = `${data.currency}${data.amount}`;
         });
 };
 getTotalPurchases();
@@ -85,17 +85,48 @@ function getTotalOrders() {
     fetch('https://inlupp-fa.azurewebsites.net/api/total-orders')
         .then(res => res.json())
         .then(data => {
-                document.getElementById('total-orders').innerHTML = `${data.currency}${data.amount}`;
+            document.getElementById('total-orders').innerHTML = `${data.currency}${data.amount}`;
         });
 };
-getTotalOrders(); 
+getTotalOrders();
 
 // GET TOTAL GROWTH
 function getTotalGrowth() {
     fetch('https://inlupp-fa.azurewebsites.net/api/total-growth')
         .then(res => res.json())
         .then(data => {
-                document.getElementById('total-growth').innerHTML = `${data.currency}${data.amount}`;
+            document.getElementById('total-growth').innerHTML = `${data.currency}${data.amount}`;
         });
 };
 getTotalGrowth();
+
+//GET UPDATES
+function getUpdates() {
+    fetch('https://inlupp-fa.azurewebsites.net/api/updates')
+        .then(res => res.json())
+        .then(data => {
+            for (const update of data) {
+                updates.insertAdjacentHTML('beforeend', `
+            <li>
+                <h6>${update.title}</h6>
+                <p class="mt-2">${update.message}</p>
+                <p class="text-muted mb-4">
+                    <i class="mdi mdi-clock-outline"></i>
+                    ${update.time}
+                </p>
+            </li>
+            `)
+            };
+        });
+};
+getUpdates();
+
+//GET SALES REPORT
+
+
+
+//GET TICKETS
+
+
+
+//GET OPEN INVOICES
