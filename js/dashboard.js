@@ -427,7 +427,7 @@
                 circle.path.setAttribute('stroke', state.color);
                 circle.path.setAttribute('stroke-width', state.width);
 
-                // var value = Math.round(circle.value() * 100);
+                // circle value
                 var value = data[0].circleValue;
                 if (value === 0) {
                   circle.setText('');
@@ -1050,87 +1050,106 @@
       document.getElementById('distribution-legend').innerHTML = distributionChart.generateLegend();
     }
 
-    if ($("#sale-report-chart").length) {
-      var CurrentChartCanvas = $("#sale-report-chart").get(0).getContext("2d");
-      var CurrentChart = new Chart(CurrentChartCanvas, {
-        type: 'bar',
-        data: {
-          labels: ["Jan", "", "Feb", "", "Mar", "", "Apr", "", "May", "", "Jun"],
-          datasets: [{
-            label: 'Europe',
-            data: [28000, 9000, 15000, 20000, 5000, 15000, 26000, 15000, 26000, 20000, 28000],
-            backgroundColor: ["#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4", "#e0f2ff", "#3da5f4"]
-          }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          layout: {
-            padding: {
-              left: 0,
-              right: 0,
-              top: 0,
-              bottom: 0
-            }
-          },
-          scales: {
-            yAxes: [{
-              display: true,
-              gridLines: {
-                drawBorder: false
+    //GET SALES REPORT
+    function getSalesReport() {
+      fetch('https://inlupp-fa.azurewebsites.net/api/sales-report')
+      .then(res => res.json())
+      .then(data => {
+
+        // Sales report overview values
+        document.getElementById('sale-report-downloads').innerHTML = data.downloads;
+        document.getElementById('sale-report-purchases').innerHTML = data.purchases;
+        document.getElementById('sale-report-users').innerHTML = data.users;
+        document.getElementById('sale-report-growth').innerHTML = data.growth;
+
+        if ($("#sale-report-chart").length) {
+          var CurrentChartCanvas = $("#sale-report-chart").get(0).getContext("2d");
+          var CurrentChart = new Chart(CurrentChartCanvas, {
+            type: 'bar',
+            data: {
+              // Months
+              labels: data.labels,
+              datasets: [{
+                // Europe 
+                label: data.datasets[0].label,
+                // Sales data
+                data: data.datasets[0].data,
+                // Background color for each month
+                backgroundColor: data.datasets[0].backgroundColor,
+              }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              layout: {
+                padding: {
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0
+                }
               },
-              ticks: {
-                fontColor: "#000",
-                display: true,
-                padding: 20,
-                fontSize: 14,
-                stepSize: 10000,
-                callback: function (value) {
-                  var ranges = [
-                    { divider: 1e6, suffix: 'M' },
-                    { divider: 1e3, suffix: 'k' }
-                  ];
-                  function formatNumber(n) {
-                    for (var i = 0; i < ranges.length; i++) {
-                      if (n >= ranges[i].divider) {
-                        return (n / ranges[i].divider).toString() + ranges[i].suffix;
+              scales: {
+                yAxes: [{
+                  display: true,
+                  gridLines: {
+                    drawBorder: false
+                  },
+                  ticks: {
+                    fontColor: "#000",
+                    display: true,
+                    padding: 20,
+                    fontSize: 14,
+                    stepSize: 10000,
+                    callback: function (value) {
+                      var ranges = [
+                        { divider: 1e6, suffix: 'M' },
+                        { divider: 1e3, suffix: 'k' }
+                      ];
+                      function formatNumber(n) {
+                        for (var i = 0; i < ranges.length; i++) {
+                          if (n >= ranges[i].divider) {
+                            return (n / ranges[i].divider).toString() + ranges[i].suffix;
+                          }
+                        }
+                        return n;
                       }
+                      return "$" + formatNumber(value);
                     }
-                    return n;
                   }
-                  return "$" + formatNumber(value);
+                }],
+                xAxes: [{
+                  stacked: false,
+                  categoryPercentage: .6,
+                  ticks: {
+                    beginAtZero: true,
+                    fontColor: "#000",
+                    display: true,
+                    padding: 20,
+                    fontSize: 14
+                  },
+                  gridLines: {
+                    color: "rgba(0, 0, 0, 0)",
+                    display: true
+                  },
+                  barPercentage: .7
+                }]
+              },
+              legend: {
+                display: false
+              },
+              elements: {
+                point: {
+                  radius: 0
                 }
               }
-            }],
-            xAxes: [{
-              stacked: false,
-              categoryPercentage: .6,
-              ticks: {
-                beginAtZero: true,
-                fontColor: "#000",
-                display: true,
-                padding: 20,
-                fontSize: 14
-              },
-              gridLines: {
-                color: "rgba(0, 0, 0, 0)",
-                display: true
-              },
-              barPercentage: .7
-            }]
-          },
-          legend: {
-            display: false
-          },
-          elements: {
-            point: {
-              radius: 0
             }
-          }
+          });
         }
-      });
+      })
     }
+    getSalesReport();
 
     if ($("#sale-report-chart-dark").length) {
       var CurrentChartCanvas = $("#sale-report-chart-dark").get(0).getContext("2d");
