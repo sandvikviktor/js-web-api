@@ -48,13 +48,37 @@ $(function() {
       .then(res => res.json())
       .then(data => {
         for (const notification of data) {
+
+          //Switch for background colors and icons
+          switch(notification.title.toLowerCase()) {
+            case 'application error':
+              color = 'success';
+              icon = 'information';
+              break;
+
+            case 'settings':
+              color = 'warning';
+              icon = 'settings';
+              break;
+              
+            case 'new user registration':
+              color = 'info';
+              icon = 'account';
+              break;
+
+            default:
+              color = ''
+              icon = ''
+              break;
+          }
+
           notifications.insertAdjacentHTML(
             "beforeend",
             `
             <a class="dropdown-item preview-item">
             <div class="preview-thumbnail">
-              <div class="preview-icon bg-success">
-                <i class="mdi mdi-information mx-0"></i>
+              <div class="preview-icon bg-${color}">
+                <i class="mdi mdi-${icon} mx-0"></i>
               </div>
             </div>
             <div class="preview-item-content">
@@ -272,7 +296,8 @@ $(function() {
         document.getElementById("sales-chart-revenue").innerHTML = data.revenue;
         document.getElementById("sales-chart-returns").innerHTML = data.returns;
         document.getElementById("sales-chart-queries").innerHTML = data.queries;
-        document.getElementById("sales-chart-invoices").innerHTML = data.invoices;
+        document.getElementById("sales-chart-invoices").innerHTML =
+          data.invoices;
 
         //Total Sales Chart
         if ($("#total-sales-chart").length) {
@@ -546,19 +571,40 @@ $(function() {
   getTotalGrowth();
 
   //GET TICKETS
-  function getTickets() {
+  function getTickets(index) {
     fetch("https://inlupp-fa.azurewebsites.net/api/tickets")
       .then(res => res.json())
       .then(data => {
-        for (const ticket of data[1].tickets) {
+        for (const ticket of data[index].tickets) {
+          const nameChars = ticket.name.split(" ");
           const date = ticket.date.split(", ");
+
+          //Colors for ticket icons
+          switch (ticket.other.toLowerCase()) {
+            case "view on map":
+              color = "primary";
+              break;
+            case "start session":
+              color = "info";
+              break;
+            case "end session":
+              color = "danger";
+              break;
+            case "on way":
+              color = "warning";
+              break;
+            default:
+              color = "";
+              break;
+          }
+
           tickets.insertAdjacentHTML(
             "beforeend",
             `
             <tr>
                 <td class="pl-0">
-                <div class="icon-rounded-primary icon-rounded-md">
-                    <h4 class="font-weight-medium">AL</h4>
+                <div class="icon-rounded-${color} icon-rounded-md">
+                    <h4 class="font-weight-medium">${nameChars[0].charAt(0)}${nameChars[1].charAt(0)}</h4>
                 </div>
                 </td>
                 <td>
@@ -582,7 +628,39 @@ $(function() {
         }
       });
   }
-  getTickets();
+  getTickets(1);
+
+  //Switch for tickets years dropdown
+  document.querySelectorAll("#selectYear > .dropdown-item").forEach(item => {
+    item.addEventListener("click", e => {
+      const btnYear = document.getElementById("btn-tickets-year");
+
+      switch (item.id) {
+        case "option17":
+          getTickets(0);
+          tickets.innerHTML = "";
+          btnYear.innerHTML = "2017";
+          break;
+
+        case "option18":
+          getTickets(1);
+          tickets.innerHTML = "";
+          btnYear.innerHTML = "2018";
+          break;
+
+        case "option19":
+          getTickets(2);
+          tickets.innerHTML = "";
+          btnYear.innerHTML = "2019";
+          break;
+
+        default:
+          console.log("Couldnt find year");
+          break;
+      }
+      e.preventDefault();
+    });
+  });
 
   //GET UPDATES
   function getUpdates() {
@@ -826,7 +904,28 @@ $(function() {
     fetch("https://inlupp-fa.azurewebsites.net/api/open-invoices")
       .then(res => res.json())
       .then(data => {
+
         for (const invoice of data) {
+
+          //Colors for status
+          switch(invoice.status.toLowerCase()) {
+            case 'progress':
+              color = 'success';
+              break;
+            case 'open':
+              color = 'warning';
+              break;
+            case 'on hold':
+              color = 'danger';
+              break;
+            case 'closed' :
+              color = 'dark';
+              break;
+            default:
+              color = '';
+              break;
+          }
+
           invoices.insertAdjacentHTML(
             "beforeend",
             `
@@ -836,7 +935,7 @@ $(function() {
                 <td>${invoice.shipping}</td>
                 <td class="font-weight-bold">$${invoice.bestPrice}</td>
                 <td>$${invoice.purchasedPrice}</td>
-                <td><div class="badge badge-success badge-fw">${invoice.status}</div></td>
+                <td><div class="badge badge-${color} badge-fw">${invoice.status}</div></td>
             </tr>
             `
           );
