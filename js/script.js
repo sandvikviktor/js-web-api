@@ -48,27 +48,26 @@ $(function() {
       .then(res => res.json())
       .then(data => {
         for (const notification of data) {
-
           //Switch for background colors and icons
-          switch(notification.title.toLowerCase()) {
-            case 'application error':
-              color = 'success';
-              icon = 'information';
+          switch (notification.title.toLowerCase()) {
+            case "application error":
+              color = "success";
+              icon = "information";
               break;
 
-            case 'settings':
-              color = 'warning';
-              icon = 'settings';
+            case "settings":
+              color = "warning";
+              icon = "settings";
               break;
-              
-            case 'new user registration':
-              color = 'info';
-              icon = 'account';
+
+            case "new user registration":
+              color = "info";
+              icon = "account";
               break;
 
             default:
-              color = ''
-              icon = ''
+              color = "";
+              icon = "";
               break;
           }
 
@@ -521,54 +520,21 @@ $(function() {
       });
   }
   getDownloads();
+  
 
-  // GET TOTAL SALES
-  function getTotalSales() {
-    fetch("https://inlupp-fa.azurewebsites.net/api/total-sales")
+  // GET TOTALS
+  function getTotals(id) {
+    fetch(`https://inlupp-fa.azurewebsites.net/api/${id}`)
       .then(res => res.json())
       .then(data => {
-        document.getElementById(
-          "total-sales"
-        ).innerHTML = `${data.currency}${data.amount}`;
+        document.getElementById(id).innerHTML = `${data.currency}${data.amount}`;
       });
   }
-  getTotalSales();
+  getTotals('total-sales');
+  getTotals('total-purchases');
+  getTotals('total-orders');
+  getTotals('total-growth');
 
-  // GET TOTAL PURCHASES
-  function getTotalPurchases() {
-    fetch("https://inlupp-fa.azurewebsites.net/api/total-purchases")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById(
-          "total-purchases"
-        ).innerHTML = `${data.currency}${data.amount}`;
-      });
-  }
-  getTotalPurchases();
-
-  // GET TOTAL ORDERS
-  function getTotalOrders() {
-    fetch("https://inlupp-fa.azurewebsites.net/api/total-orders")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById(
-          "total-orders"
-        ).innerHTML = `${data.currency}${data.amount}`;
-      });
-  }
-  getTotalOrders();
-
-  // GET TOTAL GROWTH
-  function getTotalGrowth() {
-    fetch("https://inlupp-fa.azurewebsites.net/api/total-growth")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById(
-          "total-growth"
-        ).innerHTML = `${data.currency}${data.amount}`;
-      });
-  }
-  getTotalGrowth();
 
   //GET TICKETS
   function getTickets(index) {
@@ -604,7 +570,9 @@ $(function() {
             <tr>
                 <td class="pl-0">
                 <div class="icon-rounded-${color} icon-rounded-md">
-                    <h4 class="font-weight-medium">${nameChars[0].charAt(0)}${nameChars[1].charAt(0)}</h4>
+                    <h4 class="font-weight-medium">${nameChars[0].charAt(
+                      0
+                    )}${nameChars[1].charAt(0)}</h4>
                 </div>
                 </td>
                 <td>
@@ -904,25 +872,23 @@ $(function() {
     fetch("https://inlupp-fa.azurewebsites.net/api/open-invoices")
       .then(res => res.json())
       .then(data => {
-
         for (const invoice of data) {
-
           //Colors for status
-          switch(invoice.status.toLowerCase()) {
-            case 'progress':
-              color = 'success';
+          switch (invoice.status.toLowerCase()) {
+            case "progress":
+              color = "success";
               break;
-            case 'open':
-              color = 'warning';
+            case "open":
+              color = "warning";
               break;
-            case 'on hold':
-              color = 'danger';
+            case "on hold":
+              color = "danger";
               break;
-            case 'closed' :
-              color = 'dark';
+            case "closed":
+              color = "dark";
               break;
             default:
-              color = '';
+              color = "";
               break;
           }
 
