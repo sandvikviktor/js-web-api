@@ -1,4 +1,5 @@
 $(function() {
+  
   // GET USERNAME
   function getFullName(firstname, lastname) {
     fetch(
@@ -48,6 +49,7 @@ $(function() {
       .then(res => res.json())
       .then(data => {
         for (const notification of data) {
+
           //Switch for background colors and icons
           switch (notification.title.toLowerCase()) {
             case "application error":
@@ -604,6 +606,7 @@ $(function() {
       const btnYear = document.getElementById("btn-tickets-year");
 
       switch (item.id) {
+
         case "option17":
           getTickets(0);
           tickets.innerHTML = "";
@@ -625,6 +628,7 @@ $(function() {
         default:
           console.log("Couldnt find year");
           break;
+
       }
       e.preventDefault();
     });
@@ -873,6 +877,7 @@ $(function() {
       .then(res => res.json())
       .then(data => {
         for (const invoice of data) {
+          
           //Colors for status
           switch (invoice.status.toLowerCase()) {
             case "progress":
